@@ -60,7 +60,7 @@ public class OWLOntologyDataSet implements Dataset, DatasetGraph {
         if (namedGraphFiles!=null) {
             for (File namedGraphFile : namedGraphFiles) {
                 OWLOntology o=manager.loadOntologyFromOntologyDocument(namedGraphFile);
-                namedGraphURIsToGraphs.put(o.getOntologyID().getOntologyIRI().toString(), new OWLOntologyGraph(o));
+                namedGraphURIsToGraphs.put(o.getOntologyID().getOntologyIRI().get().toString(), new OWLOntologyGraph(o));
             }
         }
     }

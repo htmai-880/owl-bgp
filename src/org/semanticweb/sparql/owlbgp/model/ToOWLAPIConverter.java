@@ -241,7 +241,7 @@ public class ToOWLAPIConverter implements ExtendedOWLObjectVisitorEx<OWLObject> 
         return m_dataFactory.getOWLObjectProperty((IRI)objectProperty.getIRI().accept(this));
     }
     public OWLObject visit(ObjectInverseOf inverseObjectProperty) {
-        return m_dataFactory.getOWLObjectInverseOf((OWLObjectPropertyExpression)inverseObjectProperty.getInvertedObjectProperty().accept(this));
+        return ((OWLObjectPropertyExpression)inverseObjectProperty.getInvertedObjectProperty().accept(this)).getInverseProperty();
     }
     public OWLObject visit(ObjectPropertyVariable objectPropertyVariable) {
         throw new RuntimeException("Error: Can only convert to OWL API objects if all variables are bound, but variable "+objectPropertyVariable.toString()+" is unbound. ");
@@ -464,7 +464,7 @@ public class ToOWLAPIConverter implements ExtendedOWLObjectVisitorEx<OWLObject> 
         return m_dataFactory.getOWLDatatypeDefinitionAxiom((OWLDatatype)axiom.getDatatype().accept(this),(OWLDataRange)axiom.getDataRange().accept(this),getAnnotations(axiom));
     }
     public OWLObject visit(HasKey axiom) {
-        Set<OWLPropertyExpression<?, ?>> pes=new HashSet<OWLPropertyExpression<?, ?>>();
+        Set<OWLPropertyExpression> pes=new HashSet<OWLPropertyExpression>();
         for (ObjectPropertyExpression ope : axiom.getObjectPropertyExpressions()) {
             pes.add((OWLObjectPropertyExpression)ope.accept(this));
         }
@@ -508,7 +508,7 @@ public class ToOWLAPIConverter implements ExtendedOWLObjectVisitorEx<OWLObject> 
         IRI versionIRI=(iri!=null?(IRI)iri.accept(this):null);
         OWLOntologyID id=new OWLOntologyID(ontologyIRI,versionIRI);
         try {
-            OWLOntologyManager m=OWLManager.createOWLOntologyManager(m_dataFactory);
+            OWLOntologyManager m=OWLManager.createOWLOntologyManager();
             OWLOntology o=m.createOntology(id);
             Set<OWLAxiom> axioms=new HashSet<OWLAxiom>();
             for (Axiom ax : ontology.getAxioms())

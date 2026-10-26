@@ -46,7 +46,7 @@ import org.semanticweb.owlapi.reasoner.NodeSet;
      *            - the ontology that should be loaded by the reasoner
      */
     public OWLBGPHermiT(OWLOntology rootOntology) {
-        super(rootOntology);
+        super(new Configuration(), rootOntology);
         m_instanceStatistics=createInstanceStatistics();
         m_instanceStatistics.getObjectPropertyHierarchyDepth();
         m_instanceStatistics.getClassHierarchyDepth();

@@ -26,7 +26,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.semanticweb.owlapi.apibinding.OWLManager;
-import org.semanticweb.owlapi.io.OWLFunctionalSyntaxOntologyFormat;
+import org.semanticweb.owlapi.formats.FunctionalSyntaxDocumentFormat;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotation;
 import org.semanticweb.owlapi.model.OWLAnnotationAssertionAxiom;
@@ -156,7 +156,7 @@ public class Skolemizer {
         Skolemizer skolemizer=new Skolemizer();
         OWLOntology skolemizedOntology=skolemizer.skolemize(ontology);
         BufferedOutputStream outputStream=new BufferedOutputStream(new FileOutputStream(skolemizedOntologyFile));
-        manager.saveOntology(skolemizedOntology,new OWLFunctionalSyntaxOntologyFormat(), outputStream);
+        manager.saveOntology(skolemizedOntology,new FunctionalSyntaxDocumentFormat(), outputStream);
 //        Configuration config=new Configuration();
 //        //config.ignoreUnsupportedDatatypes=true;
 //        config.useDisjunctionLearning=true;
@@ -588,7 +588,7 @@ public class Skolemizer {
             return node;
         }
         public OWLObject visit(OWLLiteral node) {
-            m_literals.add(TypedLiteral.create(node.getLiteral(), node.getLang(), Datatype.create(node.getDatatype().getIRI().toString())));
+            m_literals.add(TypedLiteral.create(node.getLiteral(), node.getLang(), node.hasLang() ? Datatype.RDF_PLAIN_LITERAL : Datatype.create(node.getDatatype().getIRI().toString())));
             return node;
         }
         public OWLObject visit(OWLFacetRestriction node) {

@@ -465,6 +465,9 @@ public class FromOWLAPIConverter implements OWLObjectVisitorEx<ExtendedOWLObject
         return DatatypeRestriction.create((Datatype)node.getDatatype().accept(this),result);
     }
     public ExtendedOWLObject visit(OWLLiteral node) {
+        // OWL API 5 gives language-tagged literals the datatype rdf:langString, whereas the OWL-BGP model uses rdf:PlainLiteral
+        if (node.hasLang())
+            return TypedLiteral.create(node.getLiteral(), node.getLang(), Datatype.RDF_PLAIN_LITERAL);
         return TypedLiteral.create(node.getLiteral(), node.getLang(), (Datatype)node.getDatatype().accept(this));
     }
     public ExtendedOWLObject visit(OWLFacetRestriction node) {
@@ -526,11 +529,11 @@ public class FromOWLAPIConverter implements OWLObjectVisitorEx<ExtendedOWLObject
     }
     public ExtendedOWLObject visit(OWLOntology ontology) {
         Identifier ontologyIRI=null;
-        IRI iri=ontology.getOntologyID().getOntologyIRI();
+        IRI iri=ontology.getOntologyID().getOntologyIRI().orElse(null);
         if (iri!=null) 
             ontologyIRI=org.semanticweb.sparql.owlbgp.model.IRI.create(iri.toString());
         Identifier versionIRI=null;
-        iri=ontology.getOntologyID().getVersionIRI();
+        iri=ontology.getOntologyID().getVersionIRI().orElse(null);
         if (iri!=null) 
             versionIRI=org.semanticweb.sparql.owlbgp.model.IRI.create(iri.toString());
         Set<Import> imports=new HashSet<Import>();
